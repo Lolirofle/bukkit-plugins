@@ -1,0 +1,58 @@
+name: UserTools
+main: tk.flygande_toalett.minecraft.usertools.Plugin
+version: 0.0.1
+author: Lolirofle
+description: Tools for users
+
+commands:
+    distance:
+        description: Distance to the target block
+        usage: /distance
+
+    tpa:
+        description: Ask for teleporting to player
+        usage: /tpa [player]
+
+    tpalist:
+        description: List of teleportation requests
+        usage: /tpalist
+
+    tpahere:
+        description: Ask players for teleporting to current position
+        usage: /tpahere [player ...]
+
+    tpablock:
+        description: Block teleport requests from everyone or specified players
+        usage: /tpablock [player ...]
+
+    tpaccept:
+        description: Accept requested teleportation
+        usage: /tpaaccept [player requester ...]
+
+    tpdeny:
+        description: Deny requested teleporteration
+        usage: /tpadeny [player requester ...]
+
+    recipesusing:
+        description: Lookup recipes that uses an item
+        usage: /recipesusing [item?] [amount=1]
+
+    recipesfor:
+        description: Lookup recipes for an item
+        usage: /recipesfor [item?] [amount=1]
+
+    searchitems:
+        description: Search items using a regex pattern
+        usage: /searchitems [regex pattern]
+
+    brightness:
+        description: Lookup brightness level at current position
+        usage: /brightness
+
+    iteminfo:
+        description: Lookup various information about the held item
+        usage: /iteminfo
+
+    positioninfo:
+        description: Lookup various information about the current position
+        usage: /positioninfo

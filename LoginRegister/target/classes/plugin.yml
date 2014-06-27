@@ -1,0 +1,27 @@
+name: LoginRegister
+main: tk.flygande_toalett.minecraft.loginregister.Plugin
+version: 0.0.1
+author: Lolirofle
+description: Optional login/registration system
+
+commands:
+    login:
+        description: Login using a password
+        usage: /login [password]
+
+    register:
+        description: Register a password connected to the username
+        usage: /register [password]
+
+    unregister:
+        description: Unregister a username/password combination
+        usage: /unregister [password]
+
+permissions:
+    loginregister.enable:
+        description: Toggles login registration check
+        default: true
+
+    loginregister.requireRegistration:
+        description: Requires registration and login
+        default: false

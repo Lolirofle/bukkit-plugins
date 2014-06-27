@@ -1,0 +1,159 @@
+name: Administration
+main: tk.flygande_toalett.minecraft.administration.Plugin
+version: 0.0.1
+author: Lolirofle
+description: Optional login/registration system
+
+commands:
+    ip:
+        description: Gets ip of the player connected
+        usage: /ip [player]
+
+    kickall:
+        description: Kicks all players online
+        usage: /kickall
+
+    kickip:
+        description: Kicks all players with the specified ip
+        usage: /kickip [ip ...]
+
+    heal:
+        description: Heals player
+        usage: /heal [hp=20] [player=self ...]
+
+    hp:
+        description: Sets players health
+        usage: /hp [hp] [player=self ...]
+
+    hunger:
+        description: Sets players hunger
+        usage: /hunger [hunger] [player=self ...]
+
+    suicide:
+        description: Kills self
+        usage: /suicide
+
+    kill:
+        description: Kill player
+        usage: /kill [player ...]
+
+    tpx:
+        description: Sets players health
+        usage: /tpx [x] [player=self ...]
+
+    tpy:
+        description: Sets players health
+        usage: /tpy [y] [player=self ...]
+
+    tpz:
+        description: Sets players health
+        usage: /tpz [z] [player=self ...]
+
+    tpsurface:
+        description: Sets players health
+        usage: /tpsurface [x] [z] [player=self ...]
+
+    tpup:
+        description: Sets players health
+        usage: /tpup [player=self ...]
+
+    tpdown:
+        description: Sets players health
+        usage: /tpdown [player=self ...]
+
+    mute:
+        description: Sets players health
+        usage: /mute [player=self ...]
+
+    unmute:
+        description: Sets players health
+        usage: /unmute [player=self ...]
+
+    fly:
+        description: Toggle player flight
+        usage: /fly [state?] [player=self ...]
+
+    invisible:
+        description: Sets players invisibility
+        usage: /invisible [state?] [player=self ...]
+
+    speed:
+        description: Sets players speed
+        usage: /speed [value] [player=self ...]
+
+    jumpheight:
+        description: Sets players jump height
+        usage: /jumpheight [value] [player=self ...]
+
+    setspawner:
+        description: Sets players health
+        usage: /hp [hp] [player=self]
+
+    neverhungry:
+        description: Sets players health
+        usage: /hp [hp] [player=self ...]
+
+    underwaterbreathing:
+        description: Sets players health
+        usage: /hp [hp] [player=self ...]
+
+    inventory:
+        description: Edits players inventory
+        usage: /inventory [player?]
+
+    inventorysearch:
+        description: Search for item in players inventories and return the amount and which players
+        usage: /inventorysearch [item]
+
+    spawntree:
+        description: Sets players health
+        usage: /spawntree [tree type] [size]
+
+    hat:
+        description: Sets players health
+        usage: /hp [hp] [player=self]
+
+    playertime:
+        description: Sets players time
+        usage: /hp [hp] [player=self]
+
+    repair:
+        description: Repairs item, resetting its durability
+        usage: /hp [hp] [player=self]
+
+    workbench:
+        description: Open up workbench
+        usage: /workbench [player=self ...]
+
+    book:
+        description: Open up workbench
+        usage: /workbench [player=self ...]
+
+    position:
+        description: Open up workbench
+        usage: /position [player=self]
+
+    block:
+        description: Sets targeted block
+        usage: /block [block]
+
+    su:
+        description: Substitute user
+        usage: /su [player]
+
+    sudo:
+        description: Substitute user do
+        usage: /sudo [player] [message]
+
+    plugin:
+        description: Plugin control
+        usage: /plugin [enable|disable|toggle|reload|status] [plugin name|plugin filename]
+
+permissions:
+    loginregister.enable:
+        description: Toggles login registration check
+        default: true
+
+    loginregister.requireRegistration:
+        description: Requires registration and login
+        default: false

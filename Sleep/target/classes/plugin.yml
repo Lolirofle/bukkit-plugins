@@ -1,0 +1,39 @@
+name: Sleep
+main: tk.flygande_toalett.minecraft.sleep.Plugin
+version: 0.0.1
+author: Lolirofle
+description: Some sleep improvements
+
+commands:
+    sleeping:
+        description: Check who's sleeping for the moment in the current world
+        usage: /sleeping
+
+    notsleeping:
+        description: Check who's not sleeping for the moment in the current world
+        usage: /notsleeping
+
+permissions:
+    sleep.setspawn:
+        description: Toggles setting spawn when sleeping
+        default: true
+
+    sleep.notifydown:
+        description: Toggles notification when laying down to sleep
+        default: true
+
+    sleep.notifyup:
+        description: Toggles notification when waking up from sleep
+        default: true
+
+    sleep.allowed:
+        description: Toggles permission for sleeping in a bed
+        default: true
+
+    sleep.ignored:
+        description: Toggles whether it is ignored for player to sleep when shifting to daytime
+        default: false
+
+    sleep.depthCheck:
+        description: Toggles whether the player should be ignored at a specific depth
+        default: true
