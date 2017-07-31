@@ -1,0 +1,5 @@
+name: DeathInventoryChest
+main: tk.flygande_toalett.minecraft.deathinventorychest.Plugin
+version: 0.0.1
+author: Lolirofle
+description: Spawns a chest with the player's inventory when dying

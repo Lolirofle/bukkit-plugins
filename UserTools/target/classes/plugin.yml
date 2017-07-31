@@ -1,4 +1,4 @@
-name: User Tools
+name: UserTools
 main: tk.flygande_toalett.minecraft.usertools.Plugin
 version: 0.0.1
 author: Lolirofle
