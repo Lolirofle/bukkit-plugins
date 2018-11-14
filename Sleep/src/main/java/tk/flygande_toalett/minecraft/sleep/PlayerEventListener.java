@@ -33,7 +33,9 @@ public class PlayerEventListener implements Listener{
 
 		//Notify
 		if(event.getPlayer().hasPermission("sleep.notifydown")){
-			String message = event.getPlayer().getDisplayName() + ChatColor.DARK_PURPLE + " went to sleep (" + sleepingInWorld.size() + "/" + plugin.getPlayersSleepRequired(world).size() + ").";
+			int sleepRequired = plugin.getPlayersSleepRequired(world).size();
+
+			String message = event.getPlayer().getDisplayName() + ChatColor.DARK_PURPLE + " went to sleep" + (sleepRequired>0? " (" + sleepingInWorld.size() + "/" + sleepRequired + ")" : "") + ".";
 			for(Player player : world.getPlayers())
 				player.sendMessage(message);
 		}
@@ -54,7 +56,9 @@ public class PlayerEventListener implements Listener{
 		
 		//Notify
 		if(event.getPlayer().hasPermission("sleep.notifyup")){
-			String message = event.getPlayer().getDisplayName() + ChatColor.DARK_PURPLE + " woke up (" + count + "/" + plugin.getPlayersSleepRequired(world).size() + ").";
+			int sleepRequired = plugin.getPlayersSleepRequired(world).size();
+			
+			String message = event.getPlayer().getDisplayName() + ChatColor.DARK_PURPLE + " woke up" + (sleepRequired>0? " (" + count + "/" + sleepRequired + ")" : "") + ".";
 			for(Player player : world.getPlayers())
 				player.sendMessage(message);
 		}
@@ -68,8 +72,6 @@ public class PlayerEventListener implements Listener{
 			return;
 		}
 		
-		//Update ignore sleep for all players in current world (TODO: Expensive calls?)
-		for(Player player : event.getPlayer().getWorld().getPlayers())
-			player.setSleepingIgnored(player.hasPermission("sleep.ignored") || (player.hasPermission("sleep.depthCheck") && player.getEyeLocation().getY()<plugin.config.getDepth(event.getPlayer().getWorld().getName()) && event.getPlayer().getLocation().getBlock().getLightFromSky()==0));
+		plugin.updateSleepIgnore(event.getPlayer().getWorld());
 	}
 }

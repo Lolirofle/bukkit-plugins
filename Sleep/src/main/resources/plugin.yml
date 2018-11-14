@@ -1,6 +1,7 @@
 name: Sleep
 main: tk.flygande_toalett.minecraft.sleep.Plugin
-version: 0.0.1
+version: 0.0.2
+api-version: 1.13
 author: Lolirofle
 description: Some sleep improvements
 

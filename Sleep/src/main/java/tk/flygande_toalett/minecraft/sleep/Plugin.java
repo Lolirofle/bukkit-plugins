@@ -90,4 +90,18 @@ public final class Plugin extends JavaPlugin{
 				list.add(player);
 		return list;
 	}
+
+	public void updateSleepIgnore(World world){
+		//Update ignore sleep for all players in current world (TODO: Expensive calls?)
+		for(Player player : world.getPlayers()){
+			player.setSleepingIgnored(
+				player.hasPermission("sleep.ignored")
+				|| (
+					player.hasPermission("sleep.depthCheck")
+					&& player.getEyeLocation().getY()<this.config.getDepth(player.getWorld().getName())
+					&& player.getLocation().getBlock().getLightFromSky()==0
+				)
+			);
+		}
+	}
 }
