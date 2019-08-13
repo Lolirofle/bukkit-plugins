@@ -1,0 +1,6 @@
+name: EntityExplodeControl
+main: tk.flygande_toalett.minecraft.entity_explode_control.Plugin
+version: 0.0.1
+api-version: 1.13
+author: Lolirofle
+description: Controls the EntityExplode event

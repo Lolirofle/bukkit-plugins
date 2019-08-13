@@ -36,7 +36,7 @@ public class PlayerDeathListener implements Listener{
 	}
 
 	/**
-	 * Determines whether the position is valid for chest placement 
+	 * Determines whether the position is valid for chest placement
 	 * @param world
 	 * @param pos
 	 * @return Returns the block at the given position if valid, null elsewise
@@ -60,10 +60,8 @@ public class PlayerDeathListener implements Listener{
 		block = isValidChestPosition(world,x,y,z);
 		if(block!=null){return block;}
 
-		block = isValidChestPosition(world,x+1,y,z);
-		if(block!=null){return block;}
 
-		block = isValidChestPosition(world,x,y+1,z);
+		block = isValidChestPosition(world,x+1,y,z);
 		if(block!=null){return block;}
 
 		block = isValidChestPosition(world,x,y,z+1);
@@ -72,11 +70,22 @@ public class PlayerDeathListener implements Listener{
 		block = isValidChestPosition(world,x-1,y,z);
 		if(block!=null){return block;}
 
-		block = isValidChestPosition(world,x,y-1,z);
-		if(block!=null){return block;}
-
 		block = isValidChestPosition(world,x,y,z-1);
 		if(block!=null){return block;}
+
+
+		block = isValidChestPosition(world,x-1,y,z-1);
+		if(block!=null){return block;}
+
+		block = isValidChestPosition(world,x+1,y,z-1);
+		if(block!=null){return block;}
+
+		block = isValidChestPosition(world,x-1,y,z+1);
+		if(block!=null){return block;}
+
+		block = isValidChestPosition(world,x+1,y,z+1);
+		if(block!=null){return block;}
+
 
 		return block;
 	}
@@ -152,11 +161,11 @@ public class PlayerDeathListener implements Listener{
 							iter.remove();
 							break PlaceLoop;
 						}
-						
+
 						//Hypothetically, if drops were placed inside the already placed chests, how many drops will still be drops left
 						//In other words: If there already are enough placed chests, then stop looking for more chests
-						if(dropsSize<=0){break DroppedChestSearchLoop;} 
-						
+						if(dropsSize<=0){break DroppedChestSearchLoop;}
+
 						//Find a valid block near the player's death location to replace with a chest, stop looking for more chests if a position is not found
 						Block block = this.findValidChestPosition(player.getWorld(),player.getLocation());
 						if(block==null){break DroppedChestSearchLoop;}
@@ -165,7 +174,7 @@ public class PlayerDeathListener implements Listener{
 						block.setType(Material.CHEST);
 						Chest chest = (Chest)block.getState();
 						placedChests.add(chest);
-						
+
 						//Hypothetically, if the drops were placed inside the chest, dropsSize is now how many drops that are left
 						dropsSize-= chest.getBlockInventory().getSize();
 
@@ -178,11 +187,11 @@ public class PlayerDeathListener implements Listener{
 
 		//If no chests were successfully placed, then do the usual
 		if(placedChests.isEmpty()){
-			player.sendMessage(ChatColor.WHITE + "Dropping inventory on death" + ChatColor.GRAY + "(No chests were found among the dropped items)");
+			player.sendMessage(ChatColor.WHITE + "Dropping inventory on death" + ChatColor.GRAY + " (No chests were found among the dropped items)");
 			return;
 		}
 
-		//Place the item drops in the placed chests 
+		//Place the item drops in the placed chests
 		{
 			ChestLoop: for(Chest chest : placedChests){
 				//For each drop (from the player's inventory)
@@ -190,7 +199,7 @@ public class PlayerDeathListener implements Listener{
 				ChestAddItemLoop: while(true){
 					//If there are no more drops, then stop placing items in chests
 					if(!dropsIter.hasNext()){break ChestLoop;}
-					
+
 					ItemStack item = dropsIter.next();
 					if(item!=null){
 						//If the item stack was successfully added to the chest
@@ -199,13 +208,13 @@ public class PlayerDeathListener implements Listener{
 							dropsIter.remove();
 						}else{
 							//When not successful, then the chest is probably full, so stop adding items to this chest
-							break ChestAddItemLoop; 
+							break ChestAddItemLoop;
 						}
 					}
 				}
 			}
 		}
-		
+
 		player.sendMessage(ChatColor.WHITE + "Stored inventory in " + placedChests.size() + " chests on death" + (dropsSize>0? ChatColor.GRAY + "(" + dropsSize + " items were dropped)" : ""));
 	}
 }

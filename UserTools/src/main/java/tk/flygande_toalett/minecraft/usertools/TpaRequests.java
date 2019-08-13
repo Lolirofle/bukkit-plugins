@@ -1,91 +1,112 @@
 package tk.flygande_toalett.minecraft.usertools;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
+/**
+ * Data of tpa (teleport ask) requests for a single player (E.g. players which requested this player).
+ */
 public class TpaRequests{
+	/**
+	 * The type of tpa request.
+	 *
+	 */
 	public static enum Type{
+		/**
+		 * This player requests to be teleported to the other player.
+		 */
 		THERE,
+		
+		/**
+		 * This player requests that the other player is teleported here.
+		 */
 		HERE,
-		SPAWN,
 	}
 	
+	/**
+	 * The data of a single tpa request which was requested to a specific player.
+	 */
 	public static class Request{		
-		final Type type;
-		final String requesterPlayerName;
+		@NonNull public final Type type;
+		@NonNull public final Player requester;
+		@NonNull public final Date timestamp;
 		
-		public Request(Type type,String targetPlayerName){
+		public Request(@NonNull Type type,@NonNull Player requester,@NonNull Date timestamp){
 			this.type = type;
-			this.requesterPlayerName=targetPlayerName;
+			this.requester = requester;
+			this.timestamp = timestamp;
 		}
 	}
-	
+
 	public static class Response{		
-		final Type type;
-		final String requesterPlayerName;
-		final Player requesterPlayer;
+		public final @NonNull Request request;
+		public final @NonNull Player target;
+		public final boolean status;
 		
-		public Response(Type type,String requesterPlayerName,Player requesterPlayer){
-			this.type = type;
-			this.requesterPlayerName=requesterPlayerName;
-			this.requesterPlayer=requesterPlayer;
+		public Response(@NonNull Request request,@NonNull Player target,boolean status){
+			this.request = request;
+			this.target = target;
+			this.status = status;
 		}
 	}
 	
-	protected LinkedList<Request> requests;
-	protected boolean blocked;
+	@NonNull protected LinkedList<Request> requests = new LinkedList<Request>();
+	@NonNull public HashSet<Player> block_list = new HashSet<Player>();
+	public boolean block_all = false;
+
+	public TpaRequests(){}
 	
-	public TpaRequests(){
-		this(false);
+	/**
+	 * Returns whether this player is blocking the requester's tpa requests.
+	 * @param requester
+	 * @return
+	 */
+	public boolean is_blocking(@NonNull Player requester){
+		return block_all || block_list.contains(requester);
 	}
 	
-	public TpaRequests(boolean blocked){
-		this.requests = new LinkedList<Request>();
-		this.blocked = blocked;
-	}
-	
-	public boolean request(Type type,Player target){
-		if(blocked)
+	/**
+	 * 
+	 * @param type
+	 * @param requester
+	 * @return False when the request was unsuccessful because of the receiver blocking requests.
+	 */
+	public boolean request(@NonNull Type type,@NonNull Player requester){
+		if(this.is_blocking(requester)){
 			return false;
-		requests.push(new Request(type,target.getName()));
+		}
+
+		requests.push(new Request(type,requester,new Date()));
 		return true;
 	}
-	
-	public Response accept(Player player,Server server){
+
+	@Nullable public Response accept(@NonNull Player player){
 		try{
 			Request request = requests.pop();
-			
-			Player targetPlayer = server.getPlayer(request.requesterPlayerName);
-	
-			if(targetPlayer!=null)
-				switch(request.type){
-					case THERE:
-						targetPlayer.teleport(player);
-						break;
-					case HERE:
-						player.teleport(targetPlayer);
-						break;
-					case SPAWN:
-						player.teleport(targetPlayer.getBedSpawnLocation());
-						break;
-				}
-			
-			return new Response(request.type,request.requesterPlayerName,targetPlayer);
+			boolean possible = player.isOnline() && request.requester.isOnline(); 
+			switch(request.type){
+				case THERE:
+					return new Response(request,player,possible && request.requester.teleport(player));
+				case HERE:
+					return new Response(request,player,possible && player.teleport(request.requester));
+				default:
+					return null;
+			}
 		}catch(NoSuchElementException e){
 			return null;
 		}
 	}
 	
-	public Response deny(Player player,Server server){
+	@Nullable public Response deny(@NonNull Player player){
 		try{
-			Request request = requests.pop();
-			
-			Player targetPlayer = server.getPlayer(request.requesterPlayerName);
-			
-			return new Response(request.type,request.requesterPlayerName,targetPlayer);
+			return new Response(requests.pop(),player,false);
 		}catch(NoSuchElementException e){
 			return null;
 		}

@@ -14,26 +14,26 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class Plugin extends JavaPlugin{
 	public Config config;
 	protected HashMap<World,List<String>> sleeping;
-	
+
 	public Plugin(){
 		sleeping = new HashMap<World,List<String>>();
 	}
-	
+
 	@Override
 	public void onEnable(){
 		this.getServer().getPluginManager().registerEvents(new PlayerEventListener(this),this);
 		config = new Config(this.getConfig());
 	}
-	
+
 	@Override
-	public void onDisable(){		
+	public void onDisable(){
 		for(Player player : this.getServer().getOnlinePlayers())
 			player.setSleepingIgnored(false);
-		
+
 		config.finish();
 		this.saveConfig();
 	}
-	
+
 	@Override
 	public boolean onCommand(final CommandSender sender,final Command command,final String label,final String[] args){
 		if(command.getName().equalsIgnoreCase("sleeping")){
@@ -51,9 +51,9 @@ public final class Plugin extends JavaPlugin{
 						count++;
 					}
 				}
-				
+
 				sender.sendMessage(ChatColor.DARK_PURPLE + "Sleeping in " + world.getName() + " (" + count + "/" + getPlayersSleepRequired(world).size() + "): " + builder.toString());
-				
+
 				return true;
 			}
 		}else if(command.getName().equalsIgnoreCase("notsleeping")){
@@ -66,15 +66,15 @@ public final class Plugin extends JavaPlugin{
 					builder.append(player.getDisplayName());
 					builder.append(",");
 				}
-				
+
 				sender.sendMessage(ChatColor.DARK_PURPLE + "Not sleeping in " + world.getName() + ": " + builder.toString());
-				
+
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	List<Player> getPlayersSleepRequired(World world){
 		LinkedList<Player> list = new LinkedList<Player>();
 		for(Player player : world.getPlayers())
@@ -82,7 +82,7 @@ public final class Plugin extends JavaPlugin{
 				list.add(player);
 		return list;
 	}
-	
+
 	List<Player> getPlayersNotSleeping(World world){
 		LinkedList<Player> list = new LinkedList<Player>();
 		for(Player player : world.getPlayers())
@@ -92,13 +92,15 @@ public final class Plugin extends JavaPlugin{
 	}
 
 	public void updateSleepIgnore(World world){
+		int depth = this.config.getDepth(world.getName());
+
 		//Update ignore sleep for all players in current world (TODO: Expensive calls?)
 		for(Player player : world.getPlayers()){
 			player.setSleepingIgnored(
 				player.hasPermission("sleep.ignored")
 				|| (
 					player.hasPermission("sleep.depthCheck")
-					&& player.getEyeLocation().getY()<this.config.getDepth(player.getWorld().getName())
+					&& player.getEyeLocation().getY()<depth
 					&& player.getLocation().getBlock().getLightFromSky()==0
 				)
 			);

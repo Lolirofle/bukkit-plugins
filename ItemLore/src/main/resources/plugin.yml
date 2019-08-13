@@ -1,0 +1,37 @@
+name: ItemLore
+main: tk.flygande_toalett.minecraft.itemlore.Plugin
+version: 0.1
+api-version: 1.14
+author: Lolirofle
+description: Commands to set lore on items
+
+commands:
+  lore:
+    description: Modifying the lore on the held item
+    permission: itemlore.command.lore
+    usage: |
+      /lore set [n] <string>
+      /lore add [n] <string>
+      /lore remove [n]
+      /lore clear
+
+permissions:
+  itemlore.command.lore:
+    description: Permission to use the /lore command
+    default: false
+
+  itemlore.command.lore.set:
+    description: Permission to use the /lore set command
+    default: false
+
+  itemlore.command.lore.add:
+    description: Permission to use the /lore add command
+    default: false
+
+  itemlore.command.lore.remove:
+    description: Permission to use the /lore remove command
+    default: false
+
+  itemlore.command.lore.clear:
+    description: Permission to use the /lore clear command
+    default: false

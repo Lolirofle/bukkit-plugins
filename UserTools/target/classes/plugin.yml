@@ -1,58 +1,94 @@
 name: UserTools
 main: tk.flygande_toalett.minecraft.usertools.Plugin
 version: 0.0.1
+api-version: 1.14
 author: Lolirofle
 description: Tools for users
 
 commands:
     distance:
         description: Distance to the target block
+        permission: usertools.command.distance
         usage: /distance
 
     tpa:
         description: Ask for teleporting to player
+        permission: usertools.command.tpa
         usage: /tpa [player]
 
     tpalist:
         description: List of teleportation requests
+        permission: usertools.command.tpalist
         usage: /tpalist
 
     tpahere:
         description: Ask players for teleporting to current position
+        permission: usertools.command.tpahere
         usage: /tpahere [player ...]
 
     tpablock:
         description: Block teleport requests from everyone or specified players
+        permission: usertools.command.tpablock
         usage: /tpablock [player ...]
 
     tpaccept:
         description: Accept requested teleportation
+        permission: usertools.command.tpa
         usage: /tpaaccept [player requester ...]
 
     tpdeny:
         description: Deny requested teleporteration
+        permission: usertools.command.tpadeny
         usage: /tpadeny [player requester ...]
 
-    recipesusing:
-        description: Lookup recipes that uses an item
-        usage: /recipesusing [item?] [amount=1]
+    tpspawn:
+        description: Teleports a player to its spawnpoint
+        permission: usertools.command.tpspawn
+        usage: /tpspawn
 
-    recipesfor:
-        description: Lookup recipes for an item
-        usage: /recipesfor [item?] [amount=1]
+    tpworldspawn:
+        description: Teleports a player to the world spawnpoint
+        permission: usertools.command.tpworldspawn
+        usage: /tpworldspawn [world]
 
-    searchitems:
-        description: Search items using a regex pattern
-        usage: /searchitems [regex pattern]
+    resetspawn:
+        description: Resets a player's spawnpoint to the default world spawnpoint
+        permission: usertools.command.resetspawn
+        usage: /resetspawn
 
-    brightness:
-        description: Lookup brightness level at current position
-        usage: /brightness
+    suicide:
+        description: Kills oneself
+        permission: usertools.command.suicide
+        usage: /suicide
 
-    iteminfo:
-        description: Lookup various information about the held item
-        usage: /iteminfo
-
-    positioninfo:
-        description: Lookup various information about the current position
-        usage: /positioninfo
+permissions:
+    usertools.command.distance:
+        default: false
+    usertools.command.tpa:
+        default: false
+    usertools.command.tpalist:
+        default: false
+    usertools.command.tpahere:
+        default: false
+    usertools.command.tpablock:
+        default: false
+    usertools.command.tpa:
+        default: false
+    usertools.command.tpadeny:
+        default: false
+    usertools.command.tpspawn:
+        default: false
+    usertools.command.tpworldspawn:
+        default: false
+    usertools.command.resetspawn:
+        default: false
+    usertools.command.tpspawn.others:
+        default: false
+    usertools.command.tpworldspawn.worlds:
+        default: false
+    usertools.command.tpworldspawn.others:
+        default: false
+    usertools.command.resetspawn.others:
+        default: false
+    usertools.command.suicide:
+        default: false

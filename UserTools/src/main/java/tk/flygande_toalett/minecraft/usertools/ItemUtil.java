@@ -18,7 +18,7 @@ import org.bukkit.inventory.Recipe;
 public class ItemUtil{
 	private ItemUtil(){}
 	
-	public static HashMap<Material,Integer> materialCount(Collection<ItemStack> itemStacks){
+	public static HashMap<Material,Integer> countMaterials(Collection<ItemStack> itemStacks){
 		HashMap<Material,Integer> result = new HashMap<Material,Integer>();
 		
 		for(ItemStack stack : itemStacks){
@@ -40,7 +40,7 @@ public class ItemUtil{
 		ArrayList<Recipe> recipes = new ArrayList<Recipe>();
 		
 		//Combine duplicate item types into item counts
-		HashMap<Material,Integer> requiredItems = materialCount(items);
+		HashMap<Material,Integer> requiredItems = countMaterials(items);
 		
 		RecipeLoop: for(Iterator<Recipe> i=server.recipeIterator();i.hasNext();){
 			final Recipe recipe = i.next();
@@ -67,7 +67,7 @@ public class ItemUtil{
 					}
 				}
 			}else if(recipe instanceof ShapedRecipe){
-				final HashMap<Material,Integer> ingredients = materialCount(((ShapedRecipe)recipe).getIngredientMap().values());
+				final HashMap<Material,Integer> ingredients = countMaterials(((ShapedRecipe)recipe).getIngredientMap().values());
 				
 				//Check if the items specified are enough for making recipe, continue check next recipe if not matching
 				for(Entry<Material,Integer> ingredient : ingredients.entrySet()){

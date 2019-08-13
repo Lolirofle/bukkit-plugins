@@ -1,0 +1,14 @@
+rules:
+  - when_entities: [CREEPER,ENDER_DRAGON,FIREBALL,SMALL_FIREBALL,WITHER_SKULL]
+    for_blocks: [CHEST,ENDER_CHEST]
+    undestroyable_blocks: true
+
+  - when_entity: CREEPER
+    when_height_at_least: 56
+    undestroyable_blocks: true
+
+  - when_entity: CREEPER
+    when_sunlight: true
+    undestroyable_blocks: true
+
+  - loot_yield: 1.0

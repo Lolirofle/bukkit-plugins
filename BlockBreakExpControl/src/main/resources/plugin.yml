@@ -1,0 +1,6 @@
+name: BlockBreakExpControl
+main: tk.flygande_toalett.minecraft.block_break_exp_control.Plugin
+version: 0.0.1
+api-version: 1.13
+author: Lolirofle
+description: Controls the experience yielded from BlockBreak events

@@ -13,15 +13,15 @@ import org.bukkit.event.player.*;
 
 public class PlayerEventListener implements Listener{
 	protected Plugin plugin;
-	
+
 	public PlayerEventListener(Plugin plugin){
 		this.plugin = plugin;
 	}
-	
+
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void onPlayerBedEnterNotify(final PlayerBedEnterEvent event){
 		final World world = event.getPlayer().getWorld();
-		
+
 		//Add to list of sleeping players
 		List<String> sleepingInWorld = plugin.sleeping.get(world);
 		if(sleepingInWorld==null)
@@ -40,7 +40,7 @@ public class PlayerEventListener implements Listener{
 				player.sendMessage(message);
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void onPlayerBedLeaveNotify(final PlayerBedLeaveEvent event){
 		final World world = event.getPlayer().getWorld();
@@ -53,17 +53,17 @@ public class PlayerEventListener implements Listener{
 			plugin.sleeping.put(world,sleepingInWorld);
 			count = sleepingInWorld.size();
 		}
-		
+
 		//Notify
 		if(event.getPlayer().hasPermission("sleep.notifyup")){
 			int sleepRequired = plugin.getPlayersSleepRequired(world).size();
-			
+
 			String message = event.getPlayer().getDisplayName() + ChatColor.DARK_PURPLE + " woke up" + (sleepRequired>0? " (" + count + "/" + sleepRequired + ")" : "") + ".";
 			for(Player player : world.getPlayers())
 				player.sendMessage(message);
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled=true)
 	public void onPlayerBedEnter(final PlayerBedEnterEvent event){
 		//Check if player is allowed to sleep
@@ -71,7 +71,13 @@ public class PlayerEventListener implements Listener{
 			event.setCancelled(true);
 			return;
 		}
-		
+
 		plugin.updateSleepIgnore(event.getPlayer().getWorld());
 	}
+
+	/*@EventHandler(priority=EventPriority.HIGH, ignoreCancelled=true)
+	public void onPlayerBedLeave(final PlayerBedLeaveEvent event){
+		Player player = event.getPlayer();
+		player.setHealth(player.getMaxHealth());
+	}*/
 }

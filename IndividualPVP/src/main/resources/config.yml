@@ -1,0 +1,8 @@
+# The number of milliseconds to wait before one can toggle the PVP setting again (0 to disable the need for waiting)
+pvp_enable_disable_wait: 2000
+
+# The number of milliseconds to wait before one can toggle the PVP setting after getting hurt by another player (0 to disable the need for waiting)
+pvp_hurt_disable_wait: 20000
+
+# If a PVP toggle is announced (on: always announce, off: never announce, world: announce to the players in the same world, <int>: announce to the players in the specified square radius)
+pvp_toggle_announce: on

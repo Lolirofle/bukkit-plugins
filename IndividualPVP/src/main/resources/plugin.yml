@@ -1,0 +1,40 @@
+name: IndividualPVP
+main: tk.flygande_toalett.minecraft.individualpvp.Plugin
+version: 0.1
+api-version: 1.13
+author: Lolirofle
+description: Enables the ability for each player to toggle their own PVP setting
+
+commands:
+  pvp:
+    description: Sets/toggles/gets the PVP setting
+    permission: individualpvp.command.pvp
+    usage: Use /pvp [on|off|1|0|true|false|enabled|disabled|enable|disable|toggle|get|?]
+  pvpother:
+    description: Sets/toggles/gets the PVP setting of other players
+    permission: individualpvp.command.pvpother
+    usage: Use /pvpother <player name> [on|off|1|0|true|false|enabled|disabled|enable|disable|toggle|get|?]
+  getpvp:
+    description: Gets the PVP setting of a player
+    permission: individualpvp.command.getpvp
+    usage: Use /getpvp [player name]
+
+permissions:
+  individualpvp.command.pvp:
+    description: Permission to use the /pvp command
+    default: true
+  individualpvp.command.getpvp:
+    description: Permission to use the /getpvp command
+    default: true
+  individualpvp.command.pvpother:
+    description: Permission to use the /pvpother command
+    default: op
+  individualpvp.forcepvp:
+    description: Forces PVP to be enabled regardless of the explicit setting. If both individualpvp.forcenopvp and individualpvp.forcepvp is enabled, then the former will take precedence
+    default: false
+  individualpvp.forcenopvp:
+    description: Forces PVP to be disabled regardless of the explicit setting. If both individualpvp.forcenopvp and individualpvp.forcepvp is enabled, then the former will take precedence
+    default: false
+  individualpvp.defaultpvp:
+    description: Default status of PVP when not explicitly set and not forced
+    default: false

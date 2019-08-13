@@ -1,171 +1,48 @@
 package tk.flygande_toalett.minecraft.usertools;
 
-import java.text.DecimalFormat;
-import java.util.Arrays;
+import java.io.File;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Pattern;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.BlockIterator;
+import org.eclipse.jdt.annotation.NonNull;
 
-public final class Plugin extends JavaPlugin{
-	HashMap<Player,TpaRequests> tpa;
+import tk.flygande_toalett.minecraft.usertools.commands.*;
+
+public final class Plugin extends JavaPlugin implements Listener{
+	protected HashMap<Player,TpaRequests> tpa = new HashMap<Player,TpaRequests>();
 	
-	public Plugin(){
-		tpa = new HashMap<Player,TpaRequests>(); 
-	}
+	public Plugin(){}
 	
 	@Override
 	public void onEnable(){
-		//this.getServer().getPluginManager().registerEvents(new PlayerEventListener(this),this);
+		if(!new File(this.getDataFolder(),"config.yml").exists()){
+			this.getLogger().warning("Configuration file does not exist, it will be created.");
+			this.saveDefaultConfig();
+		}
+		this.reloadConfig();
+
+		this.getServer().getPluginManager().registerEvents(this,this);
+
+		this.getCommand("distance").setExecutor(new Distance(this));
+		this.getCommand("tpa").setExecutor(new Tpa(this));
+		this.getCommand("tpahere").setExecutor(new TpaHere(this));
+		this.getCommand("tpaccept").setExecutor(new TpAccept(this));
+		this.getCommand("tpdeny").setExecutor(new TpDeny(this));
+		this.getCommand("tpspawn").setExecutor(new TpSpawn(this));
+		this.getCommand("tpworldspawn").setExecutor(new TpWorldSpawn(this));
+		this.getCommand("resetspawn").setExecutor(new ResetSpawn(this));
+		this.getCommand("suicide").setExecutor(new Suicide());
 	}
-	
+
+	/*
 	@Override
 	public boolean onCommand(final CommandSender sender,final Command command,final String label,final String[] args){
 		if(sender instanceof Player){
 			final Player player = (Player)sender;
-			
-			if(command.getName().equalsIgnoreCase("distance")){
-				BlockIterator targetBlockScanner = new BlockIterator(player,this.getServer().getViewDistance()*16);
-				while(targetBlockScanner.hasNext()){
-					final Block targetBlock = targetBlockScanner.next();
-					if(!targetBlock.getType().equals(Material.AIR)){
-						final Location targetBlockPos = targetBlock.getLocation();
-						final double distance = player.getLocation().distance(targetBlockPos);
-						sender.sendMessage(ChatColor.GOLD + "Distance: " + ChatColor.RED + (new DecimalFormat("#.##")).format(distance) + ChatColor.GRAY + " (" + targetBlock.getType().toString() + " at ("+targetBlockPos.getBlockX()+","+targetBlockPos.getBlockY()+","+targetBlockPos.getBlockZ()+"))");
-						
-						return true;
-					}
-				}
-				
-				sender.sendMessage(ChatColor.GOLD + "Distance: " + ChatColor.RED + " ??? " + ChatColor.GRAY + " (Too far away)");
-				return true;
-			}else if(command.getName().equalsIgnoreCase("tpa")){
-				if(args.length==1){
-					Player targetPlayer = player.getServer().getPlayer(args[0]);
-					
-					//If player with specified name doesn't exist
-					if(targetPlayer==null)
-						player.sendMessage(ChatColor.RED + "Cannot teleport to non-existant player.");
-					else{
-						//Add to request list
-						TpaRequests requests = tpa.get(targetPlayer);
-						if(requests==null)
-							requests = new TpaRequests();
-						if(!requests.request(TpaRequests.Type.THERE,player))
-							player.sendMessage(targetPlayer.getDisplayName() + ChatColor.RED + "have blocked teleportation requests.");
-						else{
-							tpa.put(targetPlayer,requests);
-							
-							//Send to player
-							player.sendMessage(ChatColor.GOLD + "Sent teleportation request (tpa) to " + targetPlayer.getDisplayName() + ", waiting for response...");
-							
-							//Send to target player
-							targetPlayer.sendMessage(ChatColor.GOLD + player.getDisplayName() + " has requested to teleport to you.");
-							targetPlayer.sendMessage(ChatColor.GOLD + "To accept, type " + ChatColor.RED + "/tpaccept");
-							targetPlayer.sendMessage(ChatColor.GOLD + "To refuse, type " + ChatColor.RED + "/tpdeny");
-						}
-					}
-				}else
-					sender.sendMessage(ChatColor.RED + command.getUsage());
-				return true;
-			}else if(command.getName().equalsIgnoreCase("tpahere")){
-				if(args.length==1){
-					Player targetPlayer = player.getServer().getPlayer(args[0]);
-					
-					//If player with specified name doesn't exist
-					if(targetPlayer==null)
-						player.sendMessage(ChatColor.RED + "Cannot teleport non-existant player.");
-					else{
-						//Add to request list
-						TpaRequests requests = tpa.get(targetPlayer);
-						if(requests==null)
-							requests = new TpaRequests();
-						if(!requests.request(TpaRequests.Type.HERE,player))
-							player.sendMessage(targetPlayer.getDisplayName() + ChatColor.RED + "have blocked teleportation requests.");
-						else{
-							tpa.put(targetPlayer,requests);
-							
-							//Send to player
-							player.sendMessage(ChatColor.GOLD + "Sent teleportation request (tpahere) to " + targetPlayer.getDisplayName() + ", waiting for response...");
-							
-							//Send to target player
-							targetPlayer.sendMessage(ChatColor.GOLD + player.getDisplayName() + " has requested that you teleport to them.");
-							targetPlayer.sendMessage(ChatColor.GOLD + "To accept, type " + ChatColor.RED + "/tpaccept");
-							targetPlayer.sendMessage(ChatColor.GOLD + "To refuse, type " + ChatColor.RED + "/tpdeny");
-						}
-					}
-				}else
-					sender.sendMessage(ChatColor.RED + command.getUsage());
-				return true;
-			}else if(command.getName().equalsIgnoreCase("tpaccept")){
-				if(args.length==0){
-					//Check request list
-					TpaRequests requests = tpa.get(player);
-					if(requests==null)
-						player.sendMessage(ChatColor.RED + "No teleportation requests");
-					else{
-						TpaRequests.Response response = requests.accept(player,this.getServer());
-						
-						if(response==null)
-							player.sendMessage(ChatColor.RED + "No teleportation requests");
-						else if(response.requesterPlayer==null)
-							player.sendMessage(ChatColor.RED + "Cannot teleport to offline player: " + response.requesterPlayerName);
-						else{
-							//Send to player
-							response.requesterPlayer.sendMessage(ChatColor.GOLD + "Teleportation request to " + player.getDisplayName() + " accepted");
-							
-							//Send to target player
-							player.sendMessage(ChatColor.GOLD + "Accepted teleportation request from " + response.requesterPlayer.getDisplayName());
-						}
-					}
-				}else
-					sender.sendMessage(ChatColor.RED + command.getUsage());
-				return true;
-			}else if(command.getName().equalsIgnoreCase("tpdeny")){
-				if(args.length==0){
-					//Check request list
-					TpaRequests requests = tpa.get(player);
-					if(requests==null)
-						player.sendMessage(ChatColor.RED + "No teleportation requests");
-					else{
-						TpaRequests.Response response = requests.deny(player,this.getServer());
-						
-						if(response==null)
-							player.sendMessage(ChatColor.RED + "No teleportation requests");
-						else if(response.requesterPlayer==null)
-							player.sendMessage(ChatColor.RED + "Cannot teleport to offline player: " + response.requesterPlayerName);
-						else{
-							//Send to player
-							response.requesterPlayer.sendMessage(ChatColor.GOLD + "Teleportation request to " + player.getDisplayName() + " denied");
-							
-							//Send to target player
-							player.sendMessage(ChatColor.GOLD + "Denied teleportation request from " + response.requesterPlayer.getDisplayName());
-						}
-					}
-				}else
-					sender.sendMessage(ChatColor.RED + command.getUsage());
-				return true;
-			}else if(command.getName().equalsIgnoreCase("tpablock")){
-				if(args.length==0){
-					tpa.put(player,new TpaRequests(true));
-				}else
-					sender.sendMessage(ChatColor.RED + command.getUsage());
-				return true;
-			}else if(command.getName().equalsIgnoreCase("brightness")){
+
+			if(command.getName().equalsIgnoreCase("brightness")){
 				sender.sendMessage(ChatColor.GOLD + "Brightness: " + ChatColor.RED + player.getLocation().getBlock().getLightLevel() + ChatColor.GRAY + '/' + ChatColor.RED + "15");
 				return true;
 			}else if(command.getName().equalsIgnoreCase("iteminfo")){
@@ -330,5 +207,15 @@ public final class Plugin extends JavaPlugin{
 		}
 		
 		return false;
+	}
+	*/
+	
+	@NonNull public TpaRequests tpaRequests(Player player){
+		TpaRequests requests = this.tpa.get(player);
+		if(requests == null){
+			requests = new TpaRequests();
+			this.tpa.put(player,requests);
+		}
+		return requests;
 	}
 }
